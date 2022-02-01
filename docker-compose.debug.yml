@@ -1,0 +1,93 @@
+version: "3"
+
+networks:
+  app-tier:
+    driver: bridge
+
+services:
+  server:
+    build: ./server
+    command: ["sh", "-c", "pip install debugpy -t /tmp && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 manage.py runserver 0.0.0.0:5000 --nothreading --noreload"]
+    volumes:
+      - ./server:/app
+    ports:
+      - "5000:5000"
+      - "5678:5678"
+    environment:
+      KAFKA_HOST: kafka
+      KAFKA_PORT: "9092"
+      MEMGRAPH_HOST: memgraph-mage
+      MEMGRAPH_PORT: "7687"
+      PATH_TO_INPUT_FILE: "/usr/lib/memgraph/import-data/RNA_tweets_hashed_2012.csv"
+    depends_on:
+      - memgraph-mage
+      - kafka
+    networks:
+      - app-tier
+
+  stream:
+    build: ./stream
+    volumes:
+      - ./stream:/app
+    entrypoint:
+      [
+        "python3",
+        "twitter.py",
+        "--file=RNA_tweets_hashed_2013.csv",
+        "--interval=2",
+      ]
+    environment:
+      KAFKA_HOST: kafka
+      KAFKA_PORT: "9092"
+    depends_on:
+      - kafka
+    networks:
+      - app-tier
+
+  zookeeper:
+    image: "bitnami/zookeeper:3.7"
+    ports:
+      - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - app-tier
+    logging:
+      driver: none
+
+  kafka:
+    image: "bitnami/kafka:2"
+    ports:
+      - "9093:9093"
+    environment:
+      - KAFKA_BROKER_ID=1
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
+      - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
+    depends_on:
+      - zookeeper
+    networks:
+      - app-tier
+    logging:
+      driver: none
+
+  memgraph-mage:
+    build: ./memgraph
+    command: ["sh", "-c", "chmod -R 777 /mage"]
+    ports:
+      - "7687:7687"
+    environment:
+      KAFKA_HOST: kafka
+      KAFKA_PORT: "9092"
+    entrypoint:
+      [
+        "/usr/lib/memgraph/memgraph",
+        "--kafka-bootstrap-servers=kafka:9092",
+        "--log-level=TRACE",
+        "--also-log-to-stderr"
+      ]
+    networks:
+      - app-tier
