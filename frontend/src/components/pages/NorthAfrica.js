@@ -23,7 +23,7 @@ class NorthAfrica extends Component {
             nodeRightClickCoordinates: {},
             contextMenuShow: false,
             contextMenu: {},
-            selectedNodeId: 0
+            selectedNodeId: null
         }
     }
     
@@ -31,7 +31,7 @@ class NorthAfrica extends Component {
         console.log("closeContextMenu called");
         if(this.state.selectedNodeId) {
             console.log("selectedNodeId is true");
-            this.setState({selectedNodeId: 0})
+            this.setState({selectedNodeId: null})
         }
     }
 
@@ -205,10 +205,11 @@ class NorthAfrica extends Component {
                         <ContextMenu selectedNodeId={selectedNodeId} menuStyle={menuStyle} nodeRightClickCoordinates={contextMenuCoordinates} clickHandler={this.closeContextMenu}/>,
                         document.body
                     )}
-                    <button className='btn btn-default btn-margin-right'>Filter on User-Tweet Network</button>
+                    <div className='filter-menu' id="filter-menu">
                     <button className='btn btn-default btn-margin-right' onClick={this.filterRetweets}>Filter on Tweets (no retweets)</button>
                     <button className='btn btn-default btn-margin-right' onClick={this.filterSources}>Filter on Tweet Sources</button>
                     <button className='btn btn-default btn-margin-right' onClick={this.loadFullGraph}>Restore Full Graph</button>
+                    </div>
                     <ForceGraph3D 
                         graphData={this.state} 
                         ref={this.myRef}
