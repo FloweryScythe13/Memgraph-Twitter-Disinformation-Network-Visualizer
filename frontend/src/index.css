@@ -13,7 +13,6 @@ code {
 }
 
 .network-stats-view, .network-stats-view-selected {
-  position: relative;
   top: 25px;
   left: 64px;
   right: 0;
@@ -21,8 +20,9 @@ code {
   padding-top: 0px;
   margin-top: 0px;
   padding: 0px;
-  float: left;
+  float: right;
   margin-left: 15px;
+  text-align: left;
   overflow: hidden;
   width: auto;
   min-width: auto;

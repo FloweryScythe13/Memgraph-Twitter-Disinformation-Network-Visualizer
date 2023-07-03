@@ -45,7 +45,7 @@ class Sidebar extends Component {
         );
 
         return (
-            <div style={{position: "relative", left: "54px"}}>
+            <div style={{position: "fixed", right: "0px", display: "inline-block", zIndex: "10918293!important", width: "auto", marginRight: "0px", clear: "both"}}>
                 <div id="networkStatistics" className='network-stats-view'>
                     <ul className="network-stats-list">
                         {networkStatisticsList}

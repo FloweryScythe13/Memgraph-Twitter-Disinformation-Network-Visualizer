@@ -48,14 +48,28 @@ class UserDetails extends Component {
 
     getTooltip = (node) => {
         var tooltip = '';
-        if (node.labels.includes('Troll')) {
+        if (node.labels === null || node.labels === undefined) {
+            return ''
+        }
+        else if (node.labels.includes('Troll')) {
             tooltip = `<div style="color:#333333;padding:12px;background: white;border-radius: 2px;">
             <div style="font-weight:bold; margin-bottom:16px;"><strong>Troll: ${node.id}</strong></div>
             <div class="keyval">
                 <div class="key">Screen Name:</div>
                 <div class="val">${node.user_screen_name}</div>
             </div>
-            <div><a href="./UserDetails/${node.uuid}">Get User Details</a></div>
+            <div class="keyval">
+                <div class="key">Followers:</div>
+                <div class="val">${node.follower_count}</div>
+            </div>
+            <div class="keyval">
+                <div class="key">Following:</div>
+                <div class="val">${node.following_count}</div>
+            </div>
+            <div class="keyval">
+                <div class="key">Language:</div>
+                <div class="val">${node.language}</div>
+            </div>
         </div>`
         }
         else if (node.labels.includes("Tweet")) {
@@ -86,6 +100,7 @@ class UserDetails extends Component {
         else if (node.labels.includes("Hashtag") || node.labels.includes("Source")) {
             tooltip = `<div><b>${node.labels[0]}</b>: <span>${node.name}</span></div>`;
         }
+        return tooltip;
     }
 
 

@@ -94,7 +94,7 @@ class Memgraph:
         return None
     
     def get_node_by_uuid(self, uuid: str, node_type: str, include_parents: bool = False):
-        common_query = match(connection=self.memgraph).node(node_type, "n", None, **{"uuid": uuid}).match(optional=True).node(variable="n").to(variable="r", directed=(not include_parents)).node(variable="m").with_({"DISTINCT n": "", "type(r)": "rel_type", "COLLECT(properties(m))": "nodes"}).with_({"{data: properties(n), relationships: COLLECT({rel_name: rel_type, nodes: nodes} )}": "results"}).return_({"results": "results"}).execute()
+        common_query = match(connection=self.memgraph).node(node_type, "n", None, **{"uuid": uuid}).match(optional=True).node(variable="n").to(variable="r", directed=(not include_parents)).node(variable="m").with_({"DISTINCT n": "", "labels(n)": "lbl", "type(r)": "rel_type", "COLLECT(properties(m))": "nodes"}).with_({"{data: properties(n), labels: lbl, relationships: COLLECT({rel_name: rel_type, nodes: nodes} )}": "results"}).return_({"results": "results"}).execute()
         result = list(common_query)
         if (result):
             return result[0]

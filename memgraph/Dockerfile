@@ -1,7 +1,12 @@
-FROM memgraph/memgraph-mage:1.1-dev
+FROM memgraph/memgraph-mage:1.7-memgraph-2.8-dev
 
 USER root
 
+RUN apt-get update && \
+  apt-get --yes install cmake && \
+  rm -rf /var/lib/apt/lists/*
+
+# RUN apt-get --yes install python3 
 # Install pip packages
 COPY requirements.txt ./
 RUN pip3 install -r requirements.txt

@@ -331,6 +331,8 @@ def get_user(id):
         result = memgraph.get_node_by_uuid(id, "User")
         log.info(F"Result value for user received: {result}")
         result_data = result["results"]["data"]
+        # TODO: change this line once Memgraph Mage supports merging a list into a dictionary within a single clause
+        result_data["labels"] = result["results"]["labels"]
         for r in result["results"]["relationships"]:
             result_data[r["rel_name"]] = r["nodes"]
         return Response(json.dumps({"data": result_data}, default=myconverter), status=200, mimetype="application/json")

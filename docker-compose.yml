@@ -32,7 +32,7 @@ services:
         "python3",
         "stream.py",
         "--file=RNA_tweets_hashed_2013-2019.csv",
-        "--interval=1.5",
+        "--interval=1",
       ]
     environment:
       KAFKA_HOST: kafka
