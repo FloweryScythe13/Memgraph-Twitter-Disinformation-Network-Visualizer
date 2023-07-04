@@ -35,7 +35,9 @@ The app uses the following technologies:
 * Create-React-App
 * react-force-graph
 
+!["app_demo_animation"](Animation1.gif)
 
+!["filtering_demo_animation"](Animation2.gif)
 
 
 ## The originally envisioned application architecture
